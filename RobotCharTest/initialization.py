@@ -14,6 +14,7 @@ key=None
 velocity=10
 
 def detect_collision():
+    
     for bodypart in robot.bodyparts:
         if pygame.Rect.colliderect(bullet.rect,bodypart.rect):
             bullet.visible=False
