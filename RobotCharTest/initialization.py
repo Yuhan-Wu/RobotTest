@@ -5,6 +5,7 @@ from RobotCharTest.Robot import Robot
 from RobotCharTest.Head import Head
 from RobotCharTest.Body import Body
 from RobotCharTest.Bullet import Bullet
+from RobotCharTest.AmmoManager import AmmoManager
 
 win_width=500
 win_height=500
@@ -49,6 +50,9 @@ def main():
     bullet=Bullet()
     bullet.draw(win)
 
+    global ammo_manager
+    ammo_manager=AmmoManager()
+
     pygame.display.update()
 
     run=True
@@ -58,6 +62,7 @@ def main():
            if event.type==pygame.QUIT:
                 run=False
        bullet.update_position(velocity)
+       ammo_manager.update_reload(50)
        win.blit(pygame.image.load("jellyfish.jpg"), (0, 0))
        robot.draw(win)
        bullet.draw(win)
