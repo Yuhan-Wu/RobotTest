@@ -2,6 +2,8 @@ import pygame
 pygame.init()
 
 from RobotCharTest.Robot import Robot
+from RobotCharTest.Head import Head
+from RobotCharTest.Body import Body
 from RobotCharTest.Bullet import Bullet
 
 win_width=500
@@ -15,10 +17,8 @@ def detect_collision():
     for bodypart in robot.bodyparts:
         if pygame.Rect.colliderect(bullet.rect,bodypart.rect):
             bullet.visible=False
-            bodypart.visible=False
-            robot.decrease_health(bodypart)
-            return True
-        return False
+            winning=robot.decrease_health(bodypart)
+        return winning
 
     pass
 
@@ -27,8 +27,18 @@ def main():
     win.blit(pygame.image.load("jellyfish.jpg"),(0,0))
     pygame.display.set_caption("Cowboy vs. Robot")
 
+    global winning
+    global failing
+    winning = False
+    failing = False
+
     global robot
-    robot=Robot()
+    head=Head()
+    body=Body()
+    bodyparts=[]
+    bodyparts.append(head)
+    bodyparts.append(body)
+    robot=Robot(bodyparts)
     robot.draw(win)
 
     global bullet
@@ -47,10 +57,14 @@ def main():
        win.blit(pygame.image.load("jellyfish.jpg"), (0, 0))
        robot.draw(win)
        bullet.draw(win)
-       if detect_collision():
+       if winning:
            break
        pygame.display.update()
-       
+
+    if winning and not(failing):
+
+        pass
+
     pass
 
 main()
