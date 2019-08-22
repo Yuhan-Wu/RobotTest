@@ -9,6 +9,9 @@ from RobotCharTest.Bullet import Bullet
 win_width=500
 win_height=500
 
+win_noise = 'WinSound.wav'
+lose_noise = 'LoseSound.wav'
+
 key=None
 
 velocity=10
@@ -59,6 +62,8 @@ def main():
        robot.draw(win)
        bullet.draw(win)
        if winning:
+           pygame.mixer.music.load(win_noise)
+           pygame.mixer.music.play(loops = 3, start = 0)
            break
        pygame.display.update()
 

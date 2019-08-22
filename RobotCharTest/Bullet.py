@@ -13,3 +13,8 @@ class Bullet(pygame.sprite.Sprite):
     def draw(self,win):
         win.blit(self.image,self.rect)
         pass
+
+    def sound(self):
+        self.sound = 'CowboyLaserSound.wav'
+        pygame.mixer.music.load(self.sound)
+        pygame.mixer.music.play(loops = 1, start = 0)
