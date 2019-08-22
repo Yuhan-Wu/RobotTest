@@ -26,12 +26,15 @@ def main():
     win=pygame.display.set_mode((win_width,win_height))
     win.blit(pygame.image.load("jellyfish.jpg"),(0,0))
     pygame.display.set_caption("Cowboy vs. Robot")
+
     global robot
     robot=Robot()
     robot.draw(win)
+
     global bullet
     bullet=Bullet()
     bullet.draw(win)
+
     pygame.display.update()
 
     run=True
@@ -47,7 +50,6 @@ def main():
        if detect_collision():
            break
        pygame.display.update()
-       'key=pygame.key.get_pressed()'
        
     pass
 
