@@ -65,7 +65,7 @@ def main():
            if event.type==pygame.QUIT:
                 run=False
        bullet.update_position(velocity)
-       gun.rotate(-2)
+       gun.rotate(-2, 320)
        ammo_manager.update_reload(50)
        win.blit(pygame.image.load("jellyfish.jpg"), (0, 0))
        robot.draw(win)
