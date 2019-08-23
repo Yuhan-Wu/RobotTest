@@ -4,6 +4,7 @@ pygame.init()
 from RobotCharTest.Robot import Robot
 from RobotCharTest.Head import Head
 from RobotCharTest.Body import Body
+from RobotCharTest.BodyPart import Body_Part
 from RobotCharTest.Bullet import Bullet
 from RobotCharTest.AmmoManager import AmmoManager
 
@@ -38,11 +39,13 @@ def main():
     failing = False
 
     global robot
-    head=Head()
-    body=Body()
+    head=Body_Part(1, "../robot_head_v1.png", (303, 263))
+    body=Body_Part(1, "../robot_body_v1.png", (300, 300))
+    gun = Body_Part(0, "../robot_cannon_v1.png", (333, 313))
     bodyparts=[]
     bodyparts.append(head)
     bodyparts.append(body)
+    bodyparts.append(gun)
     robot=Robot(bodyparts)
     robot.draw(win)
 
@@ -62,10 +65,12 @@ def main():
            if event.type==pygame.QUIT:
                 run=False
        bullet.update_position(velocity)
+       gun.rotate(5)
        ammo_manager.update_reload(50)
        win.blit(pygame.image.load("jellyfish.jpg"), (0, 0))
        robot.draw(win)
        bullet.draw(win)
+       gun.draw(win)
        if winning:
            pygame.mixer.music.load(win_noise)
            pygame.mixer.music.play(loops = 3, start = 0)
