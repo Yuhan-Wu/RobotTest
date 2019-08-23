@@ -1,0 +1,2 @@
+import GunBulletTest
+GunBulletTest.main()
