@@ -41,7 +41,7 @@ def main():
     global robot
     head=Body_Part(1, "../robot_head_v1.png", (303, 263))
     body=Body_Part(1, "../robot_body_v1.png", (300, 300))
-    gun = Body_Part(0, "../robot_cannon_v1.png", (333, 313))
+    gun = Body_Part(0, "../robot_cannon_v1.png", (336, 281))
     bodyparts=[]
     bodyparts.append(head)
     bodyparts.append(body)
@@ -65,7 +65,7 @@ def main():
            if event.type==pygame.QUIT:
                 run=False
        bullet.update_position(velocity)
-       gun.rotate(5)
+       gun.rotate(-2)
        ammo_manager.update_reload(50)
        win.blit(pygame.image.load("jellyfish.jpg"), (0, 0))
        robot.draw(win)
