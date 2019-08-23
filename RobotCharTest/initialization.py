@@ -86,6 +86,8 @@ def main():
        ammo_manager.update_reload(50)
        bullet_from_robot.update_position(-1*velocity)
 
+       robot_gun.rotate(-2, 320)
+
        winning,failing=detect_collision()
 
        win.blit(pygame.image.load("jellyfish.jpg"), (0, 0))
