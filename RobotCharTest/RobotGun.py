@@ -1,12 +1,15 @@
 import pygame
-pygame.init()
+from RobotCharTest.BodyPart import Body_Part
 
-class RobotGun(Robot_Gun):
-	def __init__(self):
-		self.image = pygame.image.load('RobotGun').convert_alpha()
+class RobotGun(Body_Part):
+	def __init__(self,path="square1.png",position=(300,300)):
+		super(RobotGun,self).__init__(path=path,position=position)
+		self.damage=0
+		self.image = pygame.image.load(path).convert_alpha()
 		self.rect = self.image.get_rect()
+		self.rect.topleft=position
+		self.shoot_sound='RobotLaserSound.wav'
 
 	def sound(self):
-		self.sound = 'RobotLaserSound.wav'
-        pygame.mixer.music.load(self.sound)
-        pygame.mixer.music.play(loops = 1, start = 0)
+		pygame.mixer.music.load(self.shoot_sound)
+		pygame.mixer.music.play(loops = 1, start = 0)
