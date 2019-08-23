@@ -1,12 +1,12 @@
-from RobotCharTest.Body import Body
-from RobotCharTest.Head import Head
+
 import pygame
-pygame.init()
+import wave
 
 class Robot(object):
     def __init__(self,bodyparts):
         self.total_health=2
         self.bodyparts=bodyparts
+        self.smash_sound='RobotSmash.wav'
 
     def decrease_health(self,bodyPart):
         self.total_health=self.total_health-bodyPart.damage
@@ -16,14 +16,8 @@ class Robot(object):
     def draw(self,win):
         for bodypart in self.bodyparts:
             bodypart.draw(win)
-            
 
     def sound(self):
-        self.sound = 'RobotSmash.wav'
-        pygame.mixer.music.load(self.sound)
+        pygame.mixer.music.load(self.smash_sound)
         pygame.mixer.music.play(loops = 1, start = 0)
         pass
-
-
-
-
