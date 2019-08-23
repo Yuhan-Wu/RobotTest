@@ -16,7 +16,13 @@ class Robot(object):
     def draw(self,win):
         for bodypart in self.bodyparts:
             bodypart.draw(win)
-    pass
+            
+
+    def sound(self):
+        self.sound = 'RobotSmash.wav'
+        pygame.mixer.music.load(self.sound)
+        pygame.mixer.music.play(loops = 1, start = 0)
+        pass
 
 
 

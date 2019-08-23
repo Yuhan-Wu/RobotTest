@@ -5,9 +5,13 @@ from RobotCharTest.Robot import Robot
 from RobotCharTest.Head import Head
 from RobotCharTest.Body import Body
 from RobotCharTest.Bullet import Bullet
+from RobotCharTest.AmmoManager import AmmoManager
 
 win_width=500
 win_height=500
+
+win_noise = 'WinSound.wav'
+lose_noise = 'LoseSound.wav'
 
 key=None
 
@@ -53,6 +57,9 @@ def main():
     bullet=Bullet()
     bullet.draw(win)
 
+    global ammo_manager
+    ammo_manager=AmmoManager()
+
     global bullet_from_robot
     bullet_from_robot=Bullet(position=(300,300))
     bullet_from_robot.draw(win)
@@ -68,6 +75,7 @@ def main():
 
        # change bullet position
        bullet.update_position(velocity)
+       ammo_manager.update_reload(50)
        bullet_from_robot.update_position(-2*velocity)
 
        detect_collision()
@@ -75,6 +83,9 @@ def main():
        win.blit(pygame.image.load("jellyfish.jpg"), (0, 0))
        robot.draw(win)
        bullet.draw(win)
+       if winning:
+           pygame.mixer.music.load(win_noise)
+           pygame.mixer.music.play(loops = 3, start = 0)
        bullet_from_robot.draw(win)
        cowboy.draw(win)
        if winning or failing:
