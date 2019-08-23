@@ -1,6 +1,4 @@
-
 import pygame
-import wave
 
 class Robot(object):
     def __init__(self,bodyparts):

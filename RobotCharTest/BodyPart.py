@@ -1,5 +1,4 @@
 import pygame
-from pygame.locals import BLEND_ADD
 
 class Body_Part(pygame.sprite.Sprite):
     def __init__(self,path="square1.png",position=(300,300)):
@@ -14,11 +13,6 @@ class Body_Part(pygame.sprite.Sprite):
         win.blit(self.image,self.rect)
         pass
 
-    # def __init__(self,path,position):
-    #     pygame.sprite.Sprite.__init__(self)
-    #     self.bodypart=pygame.image.load(path)
-    #     self.postition=position
-        pass
     
 
 

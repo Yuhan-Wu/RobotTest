@@ -21,7 +21,9 @@ velocity=10
 
 def detect_collision():
     winning=False
-    failing=pygame.Rect.colliderect(bullet_from_robot.rect,cowboy.rect)
+    failing=pygame.Rect.colliderect(bullet_from_robot.rect,cowboy.rect) or \
+            pygame.Rect.colliderect(bullet.rect,cowboy.rect)
+
     if failing:
         cowboy.lose_sound()
         print("collide1")
@@ -34,6 +36,7 @@ def detect_collision():
             winning=robot.decrease_health(bodypart)
             print("collide")
             pygame.time.delay(1000)
+
     return winning,failing
     pass
 
@@ -105,6 +108,7 @@ def main():
         pygame.mixer.music.play(loops=3, start=0)
         print("fail")
         pass
+    
     pygame.time.delay(1100)
     pass
 
