@@ -4,8 +4,9 @@ pygame.init()
 from RobotCharTest.Robot import Robot
 from RobotCharTest.Head import Head
 from RobotCharTest.Body import Body
-from RobotCharTest.RobotGun import RobotGun
+from RobotCharTest.Gun import Gun
 from RobotCharTest.Cowboy import Cowboy
+from RobotCharTest.RobotGun import RobotGun
 from RobotCharTest.Bullet import Bullet
 from RobotCharTest.AmmoManager import AmmoManager
 
@@ -60,10 +61,17 @@ def main():
     cowboy=Cowboy()
     cowboy.draw(win)
 
-    global bullet
-    bullet=Bullet()
-    bullet.draw(win)
+    global gun
+    gun_image_path = "gun.png"
+    gun_position = (100, 400)
+    gun = Gun(gun_image_path, gun_position)
+    gun.draw(win)
 
+    global bullet
+    bullet_image_path = "projectile.png"
+    bullet_position = (100, 400)
+    bullet = Bullet(bullet_image_path, bullet_position)
+    bullet.draw(win)
 
     global ammo_manager
     ammo_manager=AmmoManager()
@@ -74,23 +82,36 @@ def main():
 
     pygame.display.update()
 
+    isRotate = True
+    angle = 0
+
     run=True
     while run:
        pygame.time.delay(50)
        for event in pygame.event.get():
-           if event.type==pygame.QUIT:
-                run=False
+           if ((event.type == pygame.KEYDOWN and event.key == pygame.K_q) or (event.type == pygame.QUIT)):
+               run = False
+           if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+               isRotate = False
 
+       win.blit(pygame.image.load("jellyfish.jpg"), (0, 0))
        # change bullet position
-       bullet.update_position(2*velocity)
+       # bullet.update_position(2*velocity)
        ammo_manager.update_reload(50)
-       bullet_from_robot.update_position(-1*velocity)
+       # bullet_from_robot.update_position(-1*velocity)
 
        robot_gun.rotate(-2, 320)
 
+       if isRotate:
+           angle += 10
+           pass
+       else:
+           bullet.move(win, angle, velocity)
+           pass
+       gun.rotate(win, angle)
+
        winning,failing=detect_collision()
 
-       win.blit(pygame.image.load("jellyfish.jpg"), (0, 0))
        robot.draw(win)
        bullet.draw(win)
        bullet_from_robot.draw(win)
