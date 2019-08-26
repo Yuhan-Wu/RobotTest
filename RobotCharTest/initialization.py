@@ -63,13 +63,13 @@ def main():
 
     global gun
     gun_image_path = "gun.png"
-    gun_position = (100, 400)
+    gun_position = (200, 325)
     gun = Gun(gun_image_path, gun_position)
     gun.draw(win)
 
     global bullet
     bullet_image_path = "projectile.png"
-    bullet_position = (100, 400)
+    bullet_position = (200, 325)
     bullet = Bullet(bullet_image_path, bullet_position)
     bullet.draw(win)
 
@@ -98,9 +98,9 @@ def main():
        # change bullet position
        # bullet.update_position(2*velocity)
        ammo_manager.update_reload(50)
-       # bullet_from_robot.update_position(-1*velocity)
 
-       robot_gun.rotate(-2, 320)
+       if not robot_gun.rotate(-1, 320):
+           bullet_from_robot.update_position(-0.2 * velocity)
 
        if isRotate:
            angle += 10
