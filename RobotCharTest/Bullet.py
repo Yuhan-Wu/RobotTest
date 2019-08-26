@@ -5,7 +5,7 @@ class Bullet(pygame.sprite.Sprite):
     def __init__(self,path="square1.png",position=(100,300)):
         #self.image=pygame.image.load(path).convert_alpha()
         #self.rect=self.image.get_rect()
-        #self.initial_position=position
+        self.initial_position=position
         #self.rect.topleft=position
 
         self.image = pygame.image.load(path).convert_alpha()
@@ -58,8 +58,10 @@ class Bullet(pygame.sprite.Sprite):
         if self.rect[0] > 0 and self.rect[0] < screen.get_size()[0] - self.image.get_size()[0] and self.rect[1] > 0 and self.rect[1] < screen.get_size()[1] - self.image.get_size()[1]:
             print(str(self.rect[0]) + "::" + str(self.rect[1]))
             screen.blit(self.image, self.rect)
+            return True
             pass
 
+        return False
         #BLIT THE IMAGE
         #print(str(self.rect[0]) + "::" + str(self.rect[1]))
         #screen.blit(self.image, self.rect)

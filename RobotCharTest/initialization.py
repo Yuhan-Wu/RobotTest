@@ -37,6 +37,7 @@ def detect_collision():
             robot.sound()
             winning=robot.decrease_health(bodypart)
             print("collide")
+            isCollide=True
             pygame.time.delay(1000)
 
     return winning,failing
@@ -64,19 +65,21 @@ def main():
 
     #global bullet
     #bullet=Bullet()
-    #bullet.draw(win)
+
 
     #DRAWING THE GUN
     global gun
     gun_image_path = "gun.png"
     gun_position = (100, 400)
     gun = Gun(gun_image_path, gun_position)
+    gun.draw(win)
 
     #DRAWING THE BULLET
     global bullet
     bullet_image_path = "projectile.png"
-    bullet_position = (200, 400)
+    bullet_position = (100, 400)
     bullet = Bullet(bullet_image_path, bullet_position)
+    bullet.draw(win)
 
     global ammo_manager
     ammo_manager=AmmoManager()
@@ -94,9 +97,6 @@ def main():
 
     while run:
        pygame.time.delay(50)
-       #for event in pygame.event.get():
-       #    if event.type==pygame.QUIT:
-       #         run=False
 
        for event in pygame.event.get():
             if ((event.type == pygame.KEYDOWN and event.key == pygame.K_q) or (event.type == pygame.QUIT)):
@@ -104,24 +104,23 @@ def main():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 isRotate = False
 
+       win.blit(pygame.image.load("jellyfish.jpg"), (0, 0))
        # change bullet position
-       # bullet.update_position(2*velocity)
        ammo_manager.update_reload(50)
        # bullet_from_robot.update_position(-1*velocity)
 
        #ROTATION OF GUN AND BULLET SHOOTING
+
        if isRotate:
            angle += 10
            pass
        else:
            bullet.move(win, angle, velocity)
            pass
-       #bullet.draw(screen)
        gun.rotate(win, angle)
 
-       winning,failing=detect_collision()
+       winning, failing = detect_collision()
 
-       win.blit(pygame.image.load("jellyfish.jpg"), (0, 0))
        robot.draw(win)
        bullet.draw(win)
        bullet_from_robot.draw(win)

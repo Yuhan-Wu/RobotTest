@@ -1,8 +1,8 @@
 import pygame
 pygame.init()
 
-from Gun import Gun
-from Bullet import Bullet
+from GunBulletTest.Gun import Gun
+from GunBulletTest.Bullet import Bullet
 
 #VARIABLES
 screen_width = 1200
@@ -62,4 +62,3 @@ def main():
         #gun.draw(screen)
 
     pygame.quit()
-        
