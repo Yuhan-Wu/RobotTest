@@ -69,13 +69,13 @@ def main():
     #DRAWING THE GUN
     global gun
     gun_image_path = "gun.png"
-    gun_position = (300, 400)
+    gun_position = (100, 400)
     gun = Gun(gun_image_path, gun_position)
 
     #DRAWING THE BULLET
     global bullet
     bullet_image_path = "projectile.png"
-    bullet_position = (300, 400)
+    bullet_position = (200, 400)
     bullet = Bullet(bullet_image_path, bullet_position)
 
     global ammo_manager
@@ -105,19 +105,19 @@ def main():
                 isRotate = False
 
        # change bullet position
-       bullet.update_position(2*velocity)
+       # bullet.update_position(2*velocity)
        ammo_manager.update_reload(50)
-       bullet_from_robot.update_position(-1*velocity)
+       # bullet_from_robot.update_position(-1*velocity)
 
        #ROTATION OF GUN AND BULLET SHOOTING
        if isRotate:
            angle += 10
            pass
        else:
-           bullet.move(screen, angle, velocity)
+           bullet.move(win, angle, velocity)
            pass
        #bullet.draw(screen)
-       gun.rotate(screen, angle)
+       gun.rotate(win, angle)
 
        winning,failing=detect_collision()
 
@@ -141,7 +141,7 @@ def main():
         pygame.mixer.music.play(loops=3, start=0)
         print("fail")
         pass
-    
+
     pygame.time.delay(1100)
     pass
 
