@@ -9,8 +9,10 @@ from RobotCharTest.Cowboy import Cowboy
 from RobotCharTest.Bullet import Bullet
 from RobotCharTest.AmmoManager import AmmoManager
 
-win_width=500
-win_height=500
+from RobotCharTest.Gun import Gun
+
+win_width=1200
+win_height=600
 
 win_noise = 'WinSound.wav'
 lose_noise = 'LoseSound.wav'
@@ -60,10 +62,21 @@ def main():
     cowboy=Cowboy()
     cowboy.draw(win)
 
-    global bullet
-    bullet=Bullet()
-    bullet.draw(win)
+    #global bullet
+    #bullet=Bullet()
+    #bullet.draw(win)
 
+    #DRAWING THE GUN
+    global gun
+    gun_image_path = "gun.png"
+    gun_position = (300, 400)
+    gun = Gun(gun_image_path, gun_position)
+
+    #DRAWING THE BULLET
+    global bullet
+    bullet_image_path = "projectile.png"
+    bullet_position = (300, 400)
+    bullet = Bullet(bullet_image_path, bullet_position)
 
     global ammo_manager
     ammo_manager=AmmoManager()
@@ -75,16 +88,36 @@ def main():
     pygame.display.update()
 
     run=True
+
+    isRotate = True
+    angle = 0
+
     while run:
        pygame.time.delay(50)
+       #for event in pygame.event.get():
+       #    if event.type==pygame.QUIT:
+       #         run=False
+
        for event in pygame.event.get():
-           if event.type==pygame.QUIT:
-                run=False
+            if ((event.type == pygame.KEYDOWN and event.key == pygame.K_q) or (event.type == pygame.QUIT)):
+                run = False
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                isRotate = False
 
        # change bullet position
        bullet.update_position(2*velocity)
        ammo_manager.update_reload(50)
        bullet_from_robot.update_position(-1*velocity)
+
+       #ROTATION OF GUN AND BULLET SHOOTING
+       if isRotate:
+           angle += 10
+           pass
+       else:
+           bullet.move(screen, angle, velocity)
+           pass
+       #bullet.draw(screen)
+       gun.rotate(screen, angle)
 
        winning,failing=detect_collision()
 
