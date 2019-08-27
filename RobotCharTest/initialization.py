@@ -22,12 +22,12 @@ key=None
 # CONFIG PARAMETER
 bullet_speed=20
 cowboy_gun_rot_speed = 20
-robot_gun_rot_speed = -1
+robot_gun_rot_speed = -0.5
 
 def detect_collision():
     winning=False
     failing= pygame.Rect.colliderect(robot_bullet.rect, cowboy.rect) or \
-             pygame.Rect.colliderect(cowboy_bullet.rect, cowboy.rect)
+             pygame.Rect.colliderect(cowboy_bullet[ammo_manager.get_ammo_index()].rect, cowboy.rect)
 
     if failing:
         cowboy.lose_sound()
@@ -35,7 +35,7 @@ def detect_collision():
         pygame.time.delay(1000)
 
     for bodypart in robot.bodyparts:
-        if pygame.Rect.colliderect(cowboy_bullet.rect, bodypart.rect):
+        if pygame.Rect.colliderect(cowboy_bullet[ammo_manager.get_ammo_index()].rect, bodypart.rect):
             robot.sound()
             winning=robot.decrease_health(bodypart)
             print("collide")
@@ -71,14 +71,18 @@ def main():
     cowboy_gun = Gun(gun_image_path, cowboy_gun_position)
     cowboy_gun.draw(win)
 
+    global ammo_manager
+    ammo_manager=AmmoManager()
+
     global cowboy_bullet
     bullet_image_path = "robot_bullet_v1.png"
     bullet_position = (220, win_height-160)
-    cowboy_bullet = Bullet(bullet_image_path, bullet_position)
-    cowboy_bullet.draw(win)
-
-    global ammo_manager
-    ammo_manager=AmmoManager()
+    cowboy_bullet=[]
+    counter = ammo_manager.ammo_capacity
+    while counter > 0:
+        b = Bullet(bullet_image_path, bullet_position)
+        cowboy_bullet.append(b)
+        counter -= 1
 
     global robot_bullet
     robot_bullet=Bullet(bullet_image_path, position=(win_width-270,win_height-120))
@@ -98,7 +102,8 @@ def main():
                run = False
            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                if ammo_manager.try_shoot():
-                cowboy_bullet.shoot(angle)
+                print(ammo_manager.ammo)
+                cowboy_bullet[ammo_manager.get_ammo_index()].shoot(angle)
                 isRotate = False
 
        ammo_manager.update_reload(50)
@@ -116,10 +121,10 @@ def main():
        if isRotate:
            pass
        else:
-           cowboy_bullet.update_position(math.cos(math.radians(cowboy_bullet.initial_angle)) * bullet_speed,
-                                         -math.sin(math.radians(cowboy_bullet.initial_angle)) * bullet_speed)
-           #cowboy_bullet.move(win, angle, velocity)
-           cowboy_bullet.draw(win)
+           for b in cowboy_bullet:
+               b.update_position(math.cos(math.radians(b.initial_angle)) * bullet_speed,
+               -math.sin(math.radians(b.initial_angle)) * bullet_speed)
+               b.draw(win)
            pass
        angle += cowboy_gun_rot_speed
        cowboy_gun.rotate(win, angle)

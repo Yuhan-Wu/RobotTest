@@ -17,6 +17,9 @@ class AmmoManager(object):
                 self.reloading = True
             return True
 
+    def get_ammo_index(self):
+        return self.ammo - 1
+
     # Called in the main loop, reloading
     def update_reload(self, delta_time=50):
         if self.reloading:
