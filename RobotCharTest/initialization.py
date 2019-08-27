@@ -20,7 +20,7 @@ lose_noise = 'LoseSound.wav'
 key=None
 
 # CONFIG PARAMETER
-bullet_speed=50
+bullet_speed=20
 cowboy_gun_rot_speed = 10
 robot_gun_rot_speed = -0.2
 
