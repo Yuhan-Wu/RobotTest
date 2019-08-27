@@ -11,8 +11,10 @@ from RobotCharTest.RobotGun import RobotGun
 from RobotCharTest.Bullet import Bullet
 from RobotCharTest.AmmoManager import AmmoManager
 
+
 win_width=1200
 win_height=600
+win=pygame.display.set_mode((win_width,win_height))
 
 win_noise = 'WinSound.wav'
 lose_noise = 'LoseSound.wav'
@@ -24,7 +26,8 @@ key=None
 bullet_speed=40
 bullet_position = (220, win_height-160)
 cowboy_gun_rot_speed = 20
-robot_gun_rot_speed = -0.5
+robot_gun_rot_speed = -0.1
+
 
 def detect_collision():
     winning=False
@@ -34,6 +37,14 @@ def detect_collision():
     if failing:
         cowboy.lose_sound()
         print("collide1")
+        pygame.mixer.music.load(lose_noise)
+        pygame.mixer.music.play(loops=3, start=0)
+        lose_screen = pygame.image.load('lose.png').convert_alpha()
+        win.blit(lose_screen, [0, 0])
+        print("fail")
+        pygame.display.update()
+        pygame.time.delay(1000)
+        pass
         #pygame.time.delay(1000)
 
     for bodypart in robot.bodyparts:
@@ -44,6 +55,14 @@ def detect_collision():
                 winning = robot.decrease_health(bodypart)
                 print("collide")
                 if winning:
+                    pygame.mixer.music.load(win_noise)
+                    pygame.mixer.music.play(loops=3, start=0)
+                    win_screen = pygame.image.load('win.png').convert_alpha()
+                    win.blit(win_screen, [0, 0])
+                    print("win")
+                    pygame.display.update()
+                    pygame.time.delay(1000)
+                    pass
                     break
                 # pygame.time.delay(1000)
 
@@ -51,8 +70,7 @@ def detect_collision():
     pass
 
 def main():
-    clock.tick(60)
-    win=pygame.display.set_mode((win_width,win_height))
+    clock.tick(10)
     pygame.display.set_caption("Cowboy vs. Robot")
     bg1=pygame.image.load("SpaceBackground(Rapid).png").convert_alpha()
     bg2=pygame.image.load("alien_land_v1.png").convert_alpha()
@@ -112,11 +130,14 @@ def main():
 
        ammo_manager.update_reload(50)
 
+
+       winning,failing=detect_collision()
        win.blit(bg1, (0, 0))
        win.blit(bg2, (0, 0))
 
-       robot.draw(win)
-       cowboy.draw(win)
+       if not (winning or failing):
+           robot.draw(win)
+           cowboy.draw(win)
 
        if not robot_gun.rotate(robot_gun_rot_speed, 320):
            robot_bullet.velocity=(-1, 0) * bullet_speed
@@ -126,31 +147,21 @@ def main():
            robot_bullet.draw(win)
 
 
-       for b in cowboy_bullet:
-           b.update_position(bullet_speed)
-           if b.visibility:
-            b.draw(win)
+       if not (winning or failing):
+            for b in cowboy_bullet:
+                b.update_position(bullet_speed)
+                if b.visibility:
+                    b.draw(win)
+
 
        angle += cowboy_gun_rot_speed
-       cowboy_gun.rotate(win, angle)
 
-       winning,failing=detect_collision()
 
-       if winning or failing:
-           run=False
-       pygame.display.update()
+       if not (winning or failing):
+            cowboy_gun.rotate(win, angle)
+            pygame.display.update()
 
-    if winning and not(failing):
-        pygame.mixer.music.load(win_noise)
-        pygame.mixer.music.play(loops=3, start=0)
-        print("win")
-        pass
 
-    if failing:
-        pygame.mixer.music.load(lose_noise)
-        pygame.mixer.music.play(loops=3, start=0)
-        print("fail")
-        pass
     
     #pygame.time.delay(100)
     pass
