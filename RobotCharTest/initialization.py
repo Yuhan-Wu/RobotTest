@@ -20,6 +20,7 @@ lose_noise = 'LoseSound.wav'
 clock = pygame.time.Clock()
 key=None
 
+
 # CONFIG PARAMETER
 bullet_speed=40
 bullet_position = (220, win_height-160)
