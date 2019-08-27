@@ -11,8 +11,8 @@ from RobotCharTest.RobotGun import RobotGun
 from RobotCharTest.Bullet import Bullet
 from RobotCharTest.AmmoManager import AmmoManager
 
-win_width=500
-win_height=500
+win_width=1200
+win_height=600
 
 win_noise = 'WinSound.wav'
 lose_noise = 'LoseSound.wav'
@@ -21,8 +21,8 @@ key=None
 
 # CONFIG PARAMETER
 bullet_speed=20
-cowboy_gun_rot_speed = 10
-robot_gun_rot_speed = -0.2
+cowboy_gun_rot_speed = 20
+robot_gun_rot_speed = -1
 
 def detect_collision():
     winning=False
@@ -46,13 +46,14 @@ def detect_collision():
 
 def main():
     win=pygame.display.set_mode((win_width,win_height))
-    win.blit(pygame.image.load("jellyfish.jpg"),(0,0))
     pygame.display.set_caption("Cowboy vs. Robot")
+    bg1=pygame.image.load("SpaceBackground(Rapid).png")
+    bg2=pygame.image.load("alien_land_v1.png")
 
     global robot
-    head=Head(path="robot_head_v1.png",position=(300,265))
-    body=Body(path="robot_body_v1.png")
-    robot_gun=RobotGun(path="robot_cannon_v1.png",position=(325,320))
+    head=Head(path="robot_head_v1.png",position=(win_width-300,win_height-200))
+    body=Body(path="robot_body_v1.png",position=(win_width-300,win_height-160))
+    robot_gun=RobotGun(path="robot_cannon_v1.png",position=(win_width-270,win_height-160))
     bodyparts=[]
     bodyparts.append(head)
     bodyparts.append(body)
@@ -61,18 +62,18 @@ def main():
     robot.draw(win)
 
     global cowboy
-    cowboy=Cowboy()
+    cowboy=Cowboy("cowboy_v1.png", (100, win_height-200))
     cowboy.draw(win)
 
-    global gun
-    gun_image_path = "gun.png"
-    gun_position = (200, 325)
-    gun = Gun(gun_image_path, gun_position)
-    gun.draw(win)
+    global cowboy_gun
+    gun_image_path = "gun_v1.png"
+    cowboy_gun_position = (210, win_height-160)
+    cowboy_gun = Gun(gun_image_path, cowboy_gun_position)
+    cowboy_gun.draw(win)
 
     global cowboy_bullet
-    bullet_image_path = "projectile.png"
-    bullet_position = (200, 325)
+    bullet_image_path = "robot_bullet_v1.png"
+    bullet_position = (220, win_height-160)
     cowboy_bullet = Bullet(bullet_image_path, bullet_position)
     cowboy_bullet.draw(win)
 
@@ -80,7 +81,7 @@ def main():
     ammo_manager=AmmoManager()
 
     global robot_bullet
-    robot_bullet=Bullet(position=(300, 300))
+    robot_bullet=Bullet(bullet_image_path, position=(win_width-270,win_height-120))
     robot_bullet.draw(win)
 
     pygame.display.update()
@@ -100,9 +101,13 @@ def main():
                 cowboy_bullet.shoot(angle)
                 isRotate = False
 
-       win.blit(pygame.image.load("jellyfish.jpg"), (0, 0))
-
        ammo_manager.update_reload(50)
+
+       win.blit(bg1, (0, 0))
+       win.blit(bg2, (0, 0))
+
+       robot.draw(win)
+       cowboy.draw(win)
 
        if not robot_gun.rotate(robot_gun_rot_speed, 320):
            robot_bullet.update_position(-1 * bullet_speed, 0)
@@ -117,12 +122,10 @@ def main():
            cowboy_bullet.draw(win)
            pass
        angle += cowboy_gun_rot_speed
-       gun.rotate(win, angle)
+       cowboy_gun.rotate(win, angle)
 
        winning,failing=detect_collision()
 
-       robot.draw(win)
-       cowboy.draw(win)
        if winning or failing:
            run=False
        pygame.display.update()
