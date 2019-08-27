@@ -1,0 +1,20 @@
+
+    if winning and not(failing):
+        pygame.mixer.music.load(win_noise)
+        pygame.mixer.music.play(loops=3, start=0)
+        win_screen = pygame.image.load('win.png').convert_alpha()
+        screen.blit(win_screen, [0, 0])
+        print("win")
+        pass
+
+    if failing:
+        pygame.mixer.music.load(lose_noise)
+        pygame.mixer.music.play(loops=3, start=0)
+        lose_screen = pygame.image.load('lose.png').convert_alpha()
+        screen.blit(lose_screen, [0, 0])
+        print("fail")
+        pass
+
+    if winning or failing:
+           pygame.time.delay(5000)
+           run=False
