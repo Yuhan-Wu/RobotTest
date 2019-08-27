@@ -8,7 +8,7 @@ class Robot(object):
 
     def decrease_health(self,bodyPart):
         self.total_health=self.total_health-bodyPart.damage
-        return self.total_health<0
+        return self.total_health<=0
         pass
 
     def draw(self,win):

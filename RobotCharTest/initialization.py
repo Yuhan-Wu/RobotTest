@@ -17,13 +17,14 @@ win_height=600
 win_noise = 'WinSound.wav'
 lose_noise = 'LoseSound.wav'
 
+clock = pygame.time.Clock()
 key=None
 
 # CONFIG PARAMETER
 bullet_speed=40
 bullet_position = (220, win_height-160)
 cowboy_gun_rot_speed = 20
-robot_gun_rot_speed = -0.1
+robot_gun_rot_speed = -0.5
 
 def detect_collision():
     winning=False
@@ -50,10 +51,11 @@ def detect_collision():
     pass
 
 def main():
+    clock.tick(60)
     win=pygame.display.set_mode((win_width,win_height))
     pygame.display.set_caption("Cowboy vs. Robot")
-    bg1=pygame.image.load("SpaceBackground(Rapid).png")
-    bg2=pygame.image.load("alien_land_v1.png")
+    bg1=pygame.image.load("SpaceBackground(Rapid).png").convert_alpha()
+    bg2=pygame.image.load("alien_land_v1.png").convert_alpha()
 
     global robot
     head=Head(path="robot_head_v1.png",position=(win_width-300,win_height-200))
@@ -119,6 +121,8 @@ def main():
        if not robot_gun.rotate(robot_gun_rot_speed, 320):
            robot_bullet.velocity=(-1, 0) * bullet_speed
            robot_bullet.update_position(bullet_speed)
+           pygame.mixer.music.load("RobotLaserSound.wav")
+           pygame.mixer.music.play(loops=1, start=0)
            robot_bullet.draw(win)
 
 

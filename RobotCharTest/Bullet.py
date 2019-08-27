@@ -27,6 +27,7 @@ class Bullet(pygame.sprite.Sprite):
     def reset(self):
         self.rect.topleft=self.initial_position
         self.velocity = (0,0)
+        self.sound()
 
     def draw(self,win):
         win.blit(self.image,self.rect)
@@ -77,6 +78,6 @@ class Bullet(pygame.sprite.Sprite):
         # pass
 
     def sound(self):
-        self.sound = 'CowboyLaserSound.wav'
-        pygame.mixer.music.load(self.sound)
+        # self.sound = 'CowboyLaserSound.wav'
+        pygame.mixer.music.load('CowboyLaserSound.wav')
         pygame.mixer.music.play(loops = 1, start = 0)
