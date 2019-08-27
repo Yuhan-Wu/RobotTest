@@ -20,12 +20,13 @@ class Bullet(pygame.sprite.Sprite):
     def shoot(self, angle):
         self.initial_angle = angle
         self.reset()
+        self.rect.topleft = self.initial_position
         self.velocity = (math.cos(math.radians(angle)), -math.sin(math.radians(angle)))
         self.visibility = True
         pass
 
     def reset(self):
-        self.rect.topleft=self.initial_position
+        self.rect.topleft = 2000, 2000
         self.velocity = (0,0)
         self.sound()
 
