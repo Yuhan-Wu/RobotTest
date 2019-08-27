@@ -22,8 +22,8 @@ velocity=10
 
 def detect_collision():
     winning=False
-    failing=pygame.Rect.colliderect(bullet_from_robot.rect,cowboy.rect) or \
-            pygame.Rect.colliderect(bullet.rect,cowboy.rect)
+    failing= pygame.Rect.colliderect(robot_bullet.rect, cowboy.rect) or \
+             pygame.Rect.colliderect(cowboy_bullet.rect, cowboy.rect)
 
     if failing:
         cowboy.lose_sound()
@@ -31,8 +31,8 @@ def detect_collision():
         pygame.time.delay(1000)
 
     for bodypart in robot.bodyparts:
-        if pygame.Rect.colliderect(bullet.rect,bodypart.rect):
-            bullet.back()
+        if pygame.Rect.colliderect(cowboy_bullet.rect, bodypart.rect):
+            cowboy_bullet.back()
             robot.sound()
             winning=robot.decrease_health(bodypart)
             print("collide")
@@ -67,18 +67,18 @@ def main():
     gun = Gun(gun_image_path, gun_position)
     gun.draw(win)
 
-    global bullet
+    global cowboy_bullet
     bullet_image_path = "projectile.png"
     bullet_position = (200, 325)
-    bullet = Bullet(bullet_image_path, bullet_position)
-    bullet.draw(win)
+    cowboy_bullet = Bullet(bullet_image_path, bullet_position)
+    cowboy_bullet.draw(win)
 
     global ammo_manager
     ammo_manager=AmmoManager()
 
-    global bullet_from_robot
-    bullet_from_robot=Bullet(position=(300,300))
-    bullet_from_robot.draw(win)
+    global robot_bullet
+    robot_bullet=Bullet(position=(300, 300))
+    robot_bullet.draw(win)
 
     pygame.display.update()
 
@@ -95,26 +95,25 @@ def main():
                isRotate = False
 
        win.blit(pygame.image.load("jellyfish.jpg"), (0, 0))
-       # change bullet position
-       # bullet.update_position(2*velocity)
-       ammo_manager.update_reload(50)
+
+       #ammo_manager.update_reload(50)
 
        if not robot_gun.rotate(-1, 320):
-           bullet_from_robot.update_position(-0.2 * velocity)
+           robot_bullet.update_position(-0.2 * velocity)
+           robot_bullet.draw(win)
 
        if isRotate:
-           angle += 10
            pass
        else:
-           bullet.move(win, angle, velocity)
+           cowboy_bullet.move(win, angle, velocity)
+           cowboy_bullet.draw(win)
            pass
+       angle += 10
        gun.rotate(win, angle)
 
        winning,failing=detect_collision()
 
        robot.draw(win)
-       bullet.draw(win)
-       bullet_from_robot.draw(win)
        cowboy.draw(win)
        if winning or failing:
            run=False
