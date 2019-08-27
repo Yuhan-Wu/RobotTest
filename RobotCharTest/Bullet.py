@@ -6,22 +6,27 @@ class Bullet(pygame.sprite.Sprite):
         self.image=pygame.image.load(path).convert_alpha()
         self.rect=self.image.get_rect()
         self.initial_position=position
+        self.velocity=(0, 0)
         self.initial_angle=0
         self.rect.topleft=position
+        self.visibility = False
         pass
 
-    def update_position(self,x,y):
-        self.rect[0]=self.rect[0]+x
-        self.rect[1]=self.rect[1]+y
+    def update_position(self, speed):
+        self.rect[0]=self.rect[0]+self.velocity[0]*speed
+        self.rect[1]=self.rect[1]+self.velocity[1]*speed
         pass
 
     def shoot(self, angle):
         self.initial_angle = angle
         self.reset()
+        self.velocity = (math.cos(math.radians(angle)), -math.sin(math.radians(angle)))
+        self.visibility = True
         pass
 
     def reset(self):
         self.rect.topleft=self.initial_position
+        self.velocity = (0,0)
 
     def draw(self,win):
         win.blit(self.image,self.rect)
