@@ -25,8 +25,8 @@ key=None
 # CONFIG PARAMETER
 bullet_speed=40
 bullet_position = (220, win_height-160)
-cowboy_gun_rot_speed = 20
-robot_gun_rot_speed = -0.1
+cowboy_gun_rot_speed = 60
+robot_gun_rot_speed = -0.6
 
 
 def detect_collision():
@@ -50,6 +50,7 @@ def detect_collision():
     for bodypart in robot.bodyparts:
         for b in cowboy_bullet:
             if pygame.Rect.colliderect(b.rect, bodypart.rect):
+                print()
                 b.reset()
                 robot.sound()
                 winning = robot.decrease_health(bodypart)
@@ -63,7 +64,7 @@ def detect_collision():
                     pygame.display.update()
                     pygame.time.delay(1000)
                     pass
-                    break
+                    #break
                 # pygame.time.delay(1000)
 
     return winning,failing
@@ -111,6 +112,7 @@ def main():
     global robot_bullet
     robot_bullet=Bullet(bullet_image_path, position=(win_width-270,win_height-120))
     robot_bullet.draw(win)
+
 
     pygame.display.update()
 
