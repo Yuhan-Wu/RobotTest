@@ -15,7 +15,12 @@ class Bullet(pygame.sprite.Sprite):
         self.rect[1]=self.rect[1]+y
         pass
 
-    def back(self):
+    def shoot(self, angle):
+        self.initial_angle = angle
+        self.reset()
+        pass
+
+    def reset(self):
         self.rect.topleft=self.initial_position
 
     def draw(self,win):

@@ -19,8 +19,10 @@ lose_noise = 'LoseSound.wav'
 
 key=None
 
+# CONFIG PARAMETER
 bullet_speed=50
 cowboy_gun_rot_speed = 10
+robot_gun_rot_speed = -0.2
 
 def detect_collision():
     winning=False
@@ -34,7 +36,6 @@ def detect_collision():
 
     for bodypart in robot.bodyparts:
         if pygame.Rect.colliderect(cowboy_bullet.rect, bodypart.rect):
-            cowboy_bullet.back()
             robot.sound()
             winning=robot.decrease_health(bodypart)
             print("collide")
@@ -95,15 +96,16 @@ def main():
                    (event.type == pygame.QUIT)):
                run = False
            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-               cowboy_bullet.initial_angle = angle
-               isRotate = False
+               if ammo_manager.try_shoot():
+                cowboy_bullet.shoot(angle)
+                isRotate = False
 
        win.blit(pygame.image.load("jellyfish.jpg"), (0, 0))
 
-       #ammo_manager.update_reload(50)
+       ammo_manager.update_reload(50)
 
-       if not robot_gun.rotate(-1, 320):
-           robot_bullet.update_position(-0.2 * bullet_speed, 0)
+       if not robot_gun.rotate(robot_gun_rot_speed, 320):
+           robot_bullet.update_position(-1 * bullet_speed, 0)
            robot_bullet.draw(win)
 
        if isRotate:
