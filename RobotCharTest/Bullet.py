@@ -6,11 +6,13 @@ class Bullet(pygame.sprite.Sprite):
         self.image=pygame.image.load(path).convert_alpha()
         self.rect=self.image.get_rect()
         self.initial_position=position
+        self.initial_angle=0
         self.rect.topleft=position
         pass
 
-    def update_position(self,value):
-        self.rect[0]=self.rect[0]+value
+    def update_position(self,x,y):
+        self.rect[0]=self.rect[0]+x
+        self.rect[1]=self.rect[1]+y
         pass
 
     def back(self):

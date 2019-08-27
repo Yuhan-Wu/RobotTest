@@ -1,4 +1,5 @@
 import pygame
+import math
 pygame.init()
 
 from RobotCharTest.Robot import Robot
@@ -18,7 +19,8 @@ lose_noise = 'LoseSound.wav'
 
 key=None
 
-velocity=10
+bullet_speed=50
+cowboy_gun_rot_speed = 10
 
 def detect_collision():
     winning=False
@@ -89,9 +91,11 @@ def main():
     while run:
        pygame.time.delay(50)
        for event in pygame.event.get():
-           if ((event.type == pygame.KEYDOWN and event.key == pygame.K_q) or (event.type == pygame.QUIT)):
+           if ((event.type == pygame.KEYDOWN and event.key == pygame.K_q) or \
+                   (event.type == pygame.QUIT)):
                run = False
            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+               cowboy_bullet.initial_angle = angle
                isRotate = False
 
        win.blit(pygame.image.load("jellyfish.jpg"), (0, 0))
@@ -99,16 +103,18 @@ def main():
        #ammo_manager.update_reload(50)
 
        if not robot_gun.rotate(-1, 320):
-           robot_bullet.update_position(-0.2 * velocity)
+           robot_bullet.update_position(-0.2 * bullet_speed, 0)
            robot_bullet.draw(win)
 
        if isRotate:
            pass
        else:
-           cowboy_bullet.move(win, angle, velocity)
+           cowboy_bullet.update_position(math.cos(math.radians(cowboy_bullet.initial_angle)) * bullet_speed,
+                                         -math.sin(math.radians(cowboy_bullet.initial_angle)) * bullet_speed)
+           #cowboy_bullet.move(win, angle, velocity)
            cowboy_bullet.draw(win)
            pass
-       angle += 10
+       angle += cowboy_gun_rot_speed
        gun.rotate(win, angle)
 
        winning,failing=detect_collision()
