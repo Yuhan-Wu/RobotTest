@@ -87,7 +87,7 @@ def detect_collision():
                     pygame.display.update()
                     pygame.time.delay(1000)
                     pass
-                    break
+                    #break
                 # pygame.time.delay(1000)
 
     return winning,failing
@@ -150,6 +150,7 @@ def main():
     global robot_bullet
     robot_bullet=Bullet(bullet_image_path, position=(win_width-270,win_height-120))
     robot_bullet.draw(win)
+
 
     pygame.display.update()
 
