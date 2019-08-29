@@ -79,7 +79,7 @@ def detect_collision():
 def main():
     will_restart = False
     clock.tick(10)
-    pygame.display.set_caption("Cowboy vs. Robot")
+    pygame.display.set_caption("Space Spinning Cowboy")
     bg1=pygame.image.load("background_v1.png").convert_alpha()
     bg2=pygame.image.load("alien_land_v1.png").convert_alpha()
 
@@ -109,6 +109,7 @@ def main():
 
     global cowboy
     cowboy = Cowboy("cowboy_v1.png", (200, win_height/2-200))
+    cowboy_hand = pygame.image.load("cowboy_hand_v1.png").convert_alpha()
     cowboy.draw(win)
 
     global cowboy_gun
@@ -163,6 +164,7 @@ def main():
         if not (winning or failing):
             sb.draw(win)
             cowboy.draw(win)
+            win.blit(cowboy_hand, (cowboy.rect.topleft[0] + 130, cowboy.rect.topleft[1] + 60))
             cowboy_gun_angle += cowboy_gun_rot_speed
             cowboy_gun.rotate(win, cowboy_gun_angle)
             # Drone
