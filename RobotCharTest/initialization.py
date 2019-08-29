@@ -21,6 +21,7 @@ win=pygame.display.set_mode((win_width,win_height))
 
 win_noise = 'WinSound.wav'
 lose_noise = 'LoseSound.wav'
+music = 'Music.wav'
 
 clock = pygame.time.Clock()
 key=None
@@ -86,6 +87,11 @@ def main():
     control_text_content = "SPACE to SHOOT              R to RESTART"
     control_text = font.render(control_text_content, True, (128, 0, 0))
     control_text_rect = control_text.get_rect()
+
+    audio_track = pygame.mixer.Sound(music)
+    audio_track.set_volume(1)
+    pygame.mixer.Channel(2).play(pygame.mixer.Sound(audio_track))
+
 
     global drones
     drones = []
