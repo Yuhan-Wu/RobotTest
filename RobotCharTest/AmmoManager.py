@@ -1,9 +1,9 @@
 class AmmoManager(object):
 
     def __init__(self):
-        self.ammo_capacity = 2
+        self.ammo_capacity = 6
         self.ammo = self.ammo_capacity
-        self.reloading_time = 1000
+        self.reloading_time = 5000
         self.reloading_timer = self.reloading_time
         self.reloading = False
 

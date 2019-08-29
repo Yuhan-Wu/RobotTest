@@ -28,6 +28,7 @@ class Bullet(pygame.sprite.Sprite):
     def reset(self):
         self.rect.topleft = 2000, 2000
         self.velocity = (0,0)
+        self.visibility = False
         self.sound()
 
     def draw(self,win):

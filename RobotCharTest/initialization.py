@@ -26,34 +26,29 @@ global will_restart
 will_restart = False
 
 # CONFIG PARAMETER
-bullet_speed=10
+bullet_speed = 10
 cowboy_gun_rot_speed = 10
 robot_gun_rot_speed = 0
 drone_speed = 10
-global canDamage
-canDamage = 0
 bullet_damage = -1
 # CONFIG END
 
 def detect_collision():
-    global canDamage
-    winning=False
-
-    droneCollision = False
-    for drone in drones:
-        if drone.isActive and drone.rect[0] == 150:
-            droneCollision = True
-
-    failing = droneCollision
+    winning = False
+    failing = False
 
     for drone in drones:
         for bullet in cowboy_bullet:
-            if drone.isActive and pygame.Rect.colliderect(drone.rect, bullet.rect):
-                drone.isActive = False
+            if pygame.Rect.colliderect(drone.rect, bullet.rect):
                 drone.damage(bullet_damage)
                 bullet.reset()
                 pass
+        if pygame.Rect.colliderect(drone.rect, cowboy.rect):
+            failing = True
 
+    for bullet in cowboy_bullet:
+        if pygame.Rect.colliderect(cowboy.rect, bullet.rect):
+            failing = True
     # for bodypart in robot.bodyparts:
     #     for b in cowboy_bullet:
     #         if pygame.Rect.colliderect(b.rect, bodypart.rect):
