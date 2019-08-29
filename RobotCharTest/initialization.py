@@ -22,6 +22,8 @@ lose_noise = 'LoseSound.wav'
 
 clock = pygame.time.Clock()
 key=None
+global will_reset
+will_reset = False
 
 # CONFIG PARAMETER
 bullet_speed=5
@@ -94,6 +96,7 @@ def detect_collision():
     pass
 
 def main():
+    will_reset = False
     clock.tick(10)
     pygame.display.set_caption("Cowboy vs. Robot")
     bg1=pygame.image.load("SpaceBackground(Rapid).png").convert_alpha()
@@ -163,10 +166,13 @@ def main():
            if ((event.type == pygame.KEYDOWN and event.key == pygame.K_q) or \
                    (event.type == pygame.QUIT)):
                run = False
-           if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+           elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                if ammo_manager.try_shoot():
                 print(ammo_manager.ammo)
                 cowboy_bullet[ammo_manager.get_ammo_index()].shoot(angle)
+           elif event.type == pygame.KEYDOWN and event.key == pygame.K_r:
+               will_reset = True
+               run = False
 
        ammo_manager.update_reload(50)
 
@@ -212,7 +218,8 @@ def main():
             cowboy_gun.rotate(win, angle)
             pygame.display.update()
 
-
+    if will_reset:
+        main()
     
     #pygame.time.delay(100)
     pass
