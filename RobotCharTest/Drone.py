@@ -29,7 +29,8 @@ class Drone(pygame.sprite.Sprite):
         self.health += value
         if self.health <= 0:
             self.reset()
-        pass
+            return True
+        return False
 
     def reset(self):
         self.rect.topleft = self.initial_position

@@ -11,6 +11,7 @@ from RobotCharTest.RobotGun import RobotGun
 from RobotCharTest.Bullet import Bullet
 from RobotCharTest.AmmoManager import AmmoManager
 from RobotCharTest.AudioManager import AudioManager
+from RobotCharTest.ScoreBoard import ScoreBoard
 from RobotCharTest.Drone import Drone
 
 
@@ -27,7 +28,7 @@ global will_restart
 will_restart = False
 
 # CONFIG PARAMETER
-bullet_speed = 15
+bullet_speed = 30
 cowboy_gun_rot_speed = 10
 robot_gun_rot_speed = 0
 drone_speed = 8
@@ -43,7 +44,8 @@ def detect_collision():
     for drone in drones:
         for bullet in cowboy_bullet:
             if pygame.Rect.colliderect(drone.rect, bullet.rect):
-                drone.damage(bullet_damage)
+                if drone.damage(bullet_damage):
+                    sb.add_score(1)
                 bullet.reset()
                 AudioManager.play("RobotSmash.wav")
                 pass
@@ -85,7 +87,7 @@ def main():
     drones = []
     drone_one = Drone(path="drone.png", position=(win_width + 100, win_height / 2 - 200))
     drone_two = Drone(path="drone.png", position=(win_width + 1000, win_height / 2 - 100))
-    drone_three = Drone(path="drone.png", position=(win_width + 500, win_height / 2 + 100))
+    drone_three = Drone(path="drone.png", position=(win_width + 800, win_height / 2 + 100))
     drone_four = Drone(path="drone.png", position=(win_width + 2000, win_height / 2 + 200))
     drones.append(drone_one)
     drones.append(drone_two)
@@ -122,6 +124,10 @@ def main():
     bullet_image_path = "robot_bullet_v1.png"
     cowboy_bullet = []
     counter = ammo_manager.ammo_capacity
+
+    global sb
+    sb = ScoreBoard((100, 100))
+
     while counter > 0:
         b = Bullet(bullet_image_path, (cowboy.rect.topleft[0]+250, cowboy.rect.topleft[1]+40))
         cowboy_bullet.append(b)
@@ -157,6 +163,7 @@ def main():
 
         # Draw
         if not (winning or failing):
+            sb.draw(win)
             cowboy.draw(win)
             cowboy_gun_angle += cowboy_gun_rot_speed
             cowboy_gun.rotate(win, cowboy_gun_angle)
