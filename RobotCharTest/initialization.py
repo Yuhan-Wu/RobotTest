@@ -137,8 +137,6 @@ def main():
     # robot_bullet=Bullet(bullet_image_path, position=(win_width-270,win_height-120))
     # robot_bullet.draw(win)
 
-    pygame.display.update()
-
     cowboy_gun_angle = random.randint(0, 360)
 
     run = True
@@ -183,7 +181,6 @@ def main():
             pygame.mixer.music.play(loops=1, start=0)
             lose_screen = pygame.image.load('lose.png').convert_alpha()
             win.blit(lose_screen, [0, 0])
-            print("fail")
         else:
             pass
 
