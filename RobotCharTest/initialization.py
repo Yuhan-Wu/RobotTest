@@ -80,8 +80,12 @@ def main():
     will_restart = False
     clock.tick(10)
     pygame.display.set_caption("Space Spinning Cowboy")
-    bg1=pygame.image.load("background_v1.png").convert_alpha()
-    bg2=pygame.image.load("alien_land_v1.png").convert_alpha()
+    bg1 = pygame.image.load("background_v1.png").convert_alpha()
+    bg2 = pygame.image.load("alien_land_v1.png").convert_alpha()
+    font = pygame.font.SysFont("Arial", 40)
+    control_text_content = "SPACE to SHOOT              R to RESTART"
+    control_text = font.render(control_text_content, True, (128, 0, 0))
+    control_text_rect = control_text.get_rect()
 
     global drones
     drones = []
@@ -157,6 +161,7 @@ def main():
 
         win.blit(bg1, (0, 0))
         win.blit(bg2, (0, 0))
+        win.blit(control_text, (550, 0))
 
         winning, failing = detect_collision()
 
