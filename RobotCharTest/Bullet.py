@@ -1,14 +1,15 @@
 import pygame
 import math
+from RobotCharTest.AudioManager import AudioManager
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self,path="square1.png",position=(100,300)):
-        self.image=pygame.image.load(path).convert_alpha()
-        self.rect=self.image.get_rect()
-        self.initial_position=position
-        self.velocity=(0, 0)
-        self.initial_angle=0
-        self.rect.topleft=position
+    def __init__(self, path="square1.png", position=(100, 300)):
+        self.image = pygame.image.load(path).convert_alpha()
+        self.rect = self.image.get_rect()
+        self.initial_position = position
+        self.velocity = (0, 0)
+        self.initial_angle = 0
+        self.rect.topleft = (-100, -100)
         self.visibility = False
         pass
 
@@ -20,6 +21,7 @@ class Bullet(pygame.sprite.Sprite):
     def shoot(self, angle):
         self.initial_angle = angle
         self.reset()
+        AudioManager.play("CowboyLaserSound.wav", 1)
         self.rect.topleft = self.initial_position
         self.velocity = (math.cos(math.radians(angle)), -math.sin(math.radians(angle)))
         self.visibility = True
@@ -29,13 +31,7 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.topleft = 2000, 2000
         self.velocity = (0,0)
         self.visibility = False
-        self.sound()
 
     def draw(self,win):
         win.blit(self.image,self.rect)
         pass
-
-    def sound(self):
-        # self.sound = 'CowboyLaserSound.wav'
-        pygame.mixer.music.load('CowboyLaserSound.wav')
-        pygame.mixer.music.play(loops = 1, start = 0)

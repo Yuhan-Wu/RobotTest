@@ -1,5 +1,5 @@
 import pygame
-import math
+import random
 pygame.init()
 
 from RobotCharTest.Robot import Robot
@@ -10,6 +10,7 @@ from RobotCharTest.Cowboy import Cowboy
 from RobotCharTest.RobotGun import RobotGun
 from RobotCharTest.Bullet import Bullet
 from RobotCharTest.AmmoManager import AmmoManager
+from RobotCharTest.AudioManager import AudioManager
 from RobotCharTest.Drone import Drone
 
 
@@ -26,11 +27,13 @@ global will_restart
 will_restart = False
 
 # CONFIG PARAMETER
-bullet_speed = 10
+bullet_speed = 15
 cowboy_gun_rot_speed = 10
 robot_gun_rot_speed = 0
-drone_speed = 10
+drone_speed = 8
 bullet_damage = -1
+ammo_capacity = 6
+reloading_time = 20
 # CONFIG END
 
 def detect_collision():
@@ -42,6 +45,7 @@ def detect_collision():
             if pygame.Rect.colliderect(drone.rect, bullet.rect):
                 drone.damage(bullet_damage)
                 bullet.reset()
+                AudioManager.play("RobotSmash.wav")
                 pass
         if pygame.Rect.colliderect(drone.rect, cowboy.rect):
             failing = True
@@ -112,7 +116,7 @@ def main():
     cowboy_gun.draw(win)
 
     global ammo_manager
-    ammo_manager=AmmoManager()
+    ammo_manager = AmmoManager(ammo_capacity, reloading_time)
 
     global cowboy_bullet
     bullet_image_path = "robot_bullet_v1.png"
@@ -129,8 +133,9 @@ def main():
 
     pygame.display.update()
 
-    angle = 0
-    run=True
+    cowboy_gun_angle = random.randint(0, 360)
+
+    run = True
     while run:
         for event in pygame.event.get():
             if ((event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE) or \
@@ -138,7 +143,7 @@ def main():
                 run = False
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 if ammo_manager.try_shoot():
-                    cowboy_bullet[ammo_manager.get_ammo_index()].shoot(angle)
+                    cowboy_bullet[ammo_manager.get_ammo_index()].shoot(cowboy_gun_angle)
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_r:
                 will_restart = True
                 run = False
@@ -153,8 +158,8 @@ def main():
         # Draw
         if not (winning or failing):
             cowboy.draw(win)
-            angle += cowboy_gun_rot_speed
-            cowboy_gun.rotate(win, angle)
+            cowboy_gun_angle += cowboy_gun_rot_speed
+            cowboy_gun.rotate(win, cowboy_gun_angle)
             # Drone
             for drone in drones:
                 if drone.isActive:
