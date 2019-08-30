@@ -11,6 +11,7 @@ from RobotCharTest.RobotGun import RobotGun
 from RobotCharTest.Bullet import Bullet
 from RobotCharTest.AmmoManager import AmmoManager
 from RobotCharTest.AudioManager import AudioManager
+from RobotCharTest.RewardManager import RewardManager
 from RobotCharTest.ScoreBoard import ScoreBoard
 from RobotCharTest.Drone import Drone
 
@@ -45,8 +46,9 @@ def detect_collision():
     for drone in drones:
         for bullet in cowboy_bullet:
             if pygame.Rect.colliderect(drone.rect, bullet.rect):
-                if drone.damage(bullet_damage):
+                if drone.damage(rm.get_damage(bullet_damage)):
                     sb.add_score(1)
+                    rm.add()
                 bullet.reset()
                 AudioManager.play("RobotSmash.wav")
                 pass
@@ -78,6 +80,7 @@ def detect_collision():
     pass
 
 def main():
+    # RESET EVERYTHING HERE
     will_restart = False
     clock.tick(10)
     pygame.display.set_caption("Space Spinning Cowboy")
@@ -85,8 +88,7 @@ def main():
     bg2 = pygame.image.load("alien_land_v1.png").convert_alpha()
     font = pygame.font.SysFont("Arial", 40)
     control_text_content = "SPACE to SHOOT              R to RESTART"
-    control_text = font.render(control_text_content, True, (128, 0, 0))
-    control_text_rect = control_text.get_rect()
+    control_text = font.render(control_text_content, True, (255, 255, 0))
 
     audio_track = pygame.mixer.Sound(music)
     audio_track.set_volume(1)
@@ -131,6 +133,10 @@ def main():
     global ammo_manager
     ammo_manager = AmmoManager(ammo_capacity, reloading_time)
 
+    global rm
+    rm = RewardManager(3, 10000, (win_width / 2, win_height - 100))
+    rm = RewardManager(3, 10000, (win_width / 2, win_height - 100))
+
     global cowboy_bullet
     bullet_image_path = "robot_bullet_v1.png"
     cowboy_bullet = []
@@ -151,6 +157,7 @@ def main():
     cowboy_gun_angle = random.randint(0, 360)
 
     run = True
+    # RESET END
     while run:
         for event in pygame.event.get():
             if ((event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE) or \
@@ -164,16 +171,18 @@ def main():
                 run = False
 
         ammo_manager.update_reload(50)
+        rm.update(50)
 
         win.blit(bg1, (0, 0))
         win.blit(bg2, (0, 0))
-        win.blit(control_text, (550, 0))
+        win.blit(control_text, (win_width / 2 - control_text.get_width() / 2, 0))
 
         winning, failing = detect_collision()
 
         # Draw
         if not (winning or failing):
             sb.draw(win)
+            rm.draw(win)
             cowboy.draw(win)
             win.blit(cowboy_hand, (cowboy.rect.topleft[0] + 130, cowboy.rect.topleft[1] + 60))
             cowboy_gun_angle += cowboy_gun_rot_speed

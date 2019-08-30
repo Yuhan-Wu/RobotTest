@@ -6,13 +6,13 @@ class ScoreBoard(object):
         self.font = pygame.font.SysFont("Arial", 72)
         self.score = 0
         self.content = "Score: " + str(self.score)
-        self.text = self.font.render(self.content, True, (0, 128, 0))
+        self.text = self.font.render(self.content, True, (0, 255, 0))
         self.rect = self.text.get_rect()
 
     def add_score(self, value):
         self.score += value
         self.content = "Score: " + str(self.score)
-        self.text = self.font.render(self.content, True, (0, 128, 0))
+        self.text = self.font.render(self.content, True, (0, 255, 0))
         self.rect = self.text.get_rect()
 
     def draw(self, screen):
