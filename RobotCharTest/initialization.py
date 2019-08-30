@@ -135,7 +135,6 @@ def main():
 
     global rm
     rm = RewardManager(3, 10000, (win_width / 2, win_height - 100))
-    rm = RewardManager(3, 10000, (win_width / 2, win_height - 100))
 
     global cowboy_bullet
     bullet_image_path = "robot_bullet_v1.png"
