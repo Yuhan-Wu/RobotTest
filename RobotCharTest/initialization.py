@@ -37,6 +37,8 @@ drone_speed = 8
 bullet_damage = -1
 ammo_capacity = 6
 reloading_time = 20
+reward_kill_needed = 3
+reward_last_time = 10000
 # CONFIG END
 
 def detect_collision():
@@ -134,7 +136,7 @@ def main():
     ammo_manager = AmmoManager(ammo_capacity, reloading_time)
 
     global rm
-    rm = RewardManager(3, 10000, (win_width / 2, win_height - 100))
+    rm = RewardManager(reward_kill_needed, reward_last_time, (win_width / 2, win_height - 100))
 
     global cowboy_bullet
     bullet_image_path = "robot_bullet_v1.png"
