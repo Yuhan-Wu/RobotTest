@@ -14,6 +14,7 @@ from RobotCharTest.AudioManager import AudioManager
 from RobotCharTest.RewardManager import RewardManager
 from RobotCharTest.ScoreBoard import ScoreBoard
 from RobotCharTest.Drone import Drone
+from RobotCharTest.BossDrone import BossDrone
 
 
 win_width=1600
@@ -26,14 +27,16 @@ music = 'Music.wav'
 
 clock = pygame.time.Clock()
 key=None
+
 global will_restart
 will_restart = False
 
+
 # CONFIG PARAMETER
 bullet_speed = 30
-cowboy_gun_rot_speed = 10
+cowboy_gun_rot_speed = 2
 robot_gun_rot_speed = 0
-drone_speed = 8
+drone_speed = 1
 bullet_damage = -1
 ammo_capacity = 6
 reloading_time = 20
@@ -41,14 +44,17 @@ reward_kill_needed = 3
 reward_last_time = 10000
 # CONFIG END
 
-def detect_collision():
+def detect_collision(drone_count):
     winning = False
     failing = False
+    display_boss=False
+    count_temp=drone_count
 
     for drone in drones:
         for bullet in cowboy_bullet:
             if pygame.Rect.colliderect(drone.rect, bullet.rect):
                 if drone.damage(rm.get_damage(bullet_damage)):
+                    count_temp+=1
                     sb.add_score(1)
                     rm.add()
                 bullet.reset()
@@ -56,6 +62,21 @@ def detect_collision():
                 pass
         if pygame.Rect.colliderect(drone.rect, cowboy.rect):
             failing = True
+    display_boss = (drone_count >= 2)
+
+    for bossDrone in bossDrones:
+        if bossDrone.isActive:
+            for bullet in cowboy_bullet:
+                if pygame.Rect.colliderect(bossDrone.rect, bullet.rect):
+                    if bossDrone.damage(rm.get_damage(bullet_damage)):
+                        sb.add_score(2)
+                        rm.add()
+                        bossDrone.isActive=False
+                    bullet.reset()
+                    AudioManager.play("RobotSmash.wav")
+                    pass
+            if pygame.Rect.colliderect(bossDrone.rect, cowboy.rect):
+                failing = True
 
     for bullet in cowboy_bullet:
         if pygame.Rect.colliderect(cowboy.rect, bullet.rect):
@@ -78,7 +99,7 @@ def detect_collision():
     #                 pygame.time.delay(1000)
     #                 pass
 
-    return winning,failing
+    return winning,failing,display_boss,count_temp
     pass
 
 def main():
@@ -96,6 +117,8 @@ def main():
     audio_track.set_volume(1)
     pygame.mixer.Channel(2).play(pygame.mixer.Sound(audio_track))
 
+    global drone_count
+    drone_count = 0
 
     global drones
     drones = []
@@ -109,6 +132,17 @@ def main():
     drones.append(drone_four)
     for drone in drones:
         drone.velocity = (-1, 0)
+
+    global bossDrones
+    bossDrones=[]
+    for i in range(0,4):
+        boss_temp=BossDrone(path="robot_head_v1.png",position=(win_width+10,win_height/2))
+        boss_temp.velocity=(-1, 0)
+        bossDrones.append(boss_temp)
+    global boss_index
+    boss_index=0
+    global display_boss
+    display_boss = False
 
     # global robot
     # head=Head(path="robot_head_v1.png",position=(win_width-300,win_height-200))
@@ -178,8 +212,16 @@ def main():
         win.blit(bg2, (0, 0))
         win.blit(control_text, (win_width / 2 - control_text.get_width() / 2, 0))
 
-        winning, failing = detect_collision()
+        winning, failing,display_boss,drone_count = detect_collision(drone_count)
 
+        # Boss
+        if display_boss:
+            for bossDrone in bossDrones:
+                if not bossDrone.isActive:
+                    bossDrones[boss_index].isActive=True
+                    break
+            drone_count = 0
+            display_boss=False
         # Draw
         if not (winning or failing):
             sb.draw(win)
@@ -193,6 +235,10 @@ def main():
                 if drone.isActive:
                     drone.update_position(drone_speed)
                     drone.draw(win)
+            for bossDrone in bossDrones:
+                if bossDrone.isActive:
+                    bossDrone.update_position(drone_speed)
+                    bossDrone.draw(win)
             # Cowboy Bullet
             for b in cowboy_bullet:
                 b.update_position(bullet_speed)

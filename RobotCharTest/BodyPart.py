@@ -13,6 +13,9 @@ class Body_Part(pygame.sprite.Sprite):
         win.blit(self.image,self.rect)
         pass
 
+    def move(self,delta):
+        self.rect[1]+=delta
+        pass
     
 
 
