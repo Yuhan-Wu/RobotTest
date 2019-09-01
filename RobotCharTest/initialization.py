@@ -14,6 +14,7 @@ from RobotCharTest.AudioManager import AudioManager
 from RobotCharTest.RewardManager import RewardManager
 from RobotCharTest.ScoreBoard import ScoreBoard
 from RobotCharTest.Drone import Drone
+from RobotCharTest.Overheat import Overheat
 from RobotCharTest.BossDrone import BossDrone
 
 
@@ -42,6 +43,7 @@ ammo_capacity = 6
 reloading_time = 20
 reward_kill_needed = 3
 reward_last_time = 10000
+overheat_meter_position = (100, 100)
 # CONFIG END
 
 def detect_collision(drone_count):
@@ -156,6 +158,10 @@ def main():
     # robot=Robot(bodyparts)
     # robot.draw(win)
 
+    global overheat
+    overheat = Overheat(overheat_meter_position)
+    overheat.draw(win)
+
     global cowboy
     cowboy = Cowboy("cowboy_v1.png", (200, win_height/2-200))
     cowboy_hand = pygame.image.load("cowboy_hand_v1.png").convert_alpha()
@@ -195,16 +201,35 @@ def main():
     run = True
     # RESET END
     while run:
+        shot_time = 0
+        current_time = 0
         for event in pygame.event.get():
             if ((event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE) or \
                    (event.type == pygame.QUIT)):
                 run = False
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE and overheat.isFull is False:
+                shot_time = pygame.time.get_ticks()
+
+                #Increase Heat Meter for First Shot (Everytime)
+                if(overheat.heatMeter == 0):
+                    overheat.lastShot = shot_time
+
                 if ammo_manager.try_shoot():
                     cowboy_bullet[ammo_manager.get_ammo_index()].shoot(cowboy_gun_angle)
+
+                # Increasing or decreasing the overheat meter according to the shot frequency
+                if shot_time - overheat.lastShot <= overheat.cooldown_between_bullets:
+                    overheat.check_heat(increase=True, shot_time=shot_time)
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_r:
                 will_restart = True
                 run = False
+
+        #if overheat.isFull is True:
+            #overheat.check_heat(increase=False, shot_time=shot_time)
+        current_time = pygame.time.get_ticks()
+        if current_time - overheat.lastShot > overheat.cooldown_between_bullets:
+            print(overheat.isFull)
+            overheat.check_heat(increase=False, shot_time=current_time)
 
         ammo_manager.update_reload(50)
         rm.update(50)
@@ -228,6 +253,7 @@ def main():
             sb.draw(win)
             rm.draw(win)
             cowboy.draw(win)
+            overheat.draw(win)
             win.blit(cowboy_hand, (cowboy.rect.topleft[0] + 130, cowboy.rect.topleft[1] + 60))
             cowboy_gun_angle += cowboy_gun_rot_speed
             cowboy_gun.rotate(win, cowboy_gun_angle)
