@@ -54,15 +54,16 @@ def detect_collision(drone_count):
         for bullet in cowboy_bullet:
             if pygame.Rect.colliderect(drone.rect, bullet.rect):
                 if drone.damage(rm.get_damage(bullet_damage)):
+                    AudioManager.play("WinSound.wav")
                     count_temp+=1
                     sb.add_score(1)
                     rm.add()
                 bullet.reset()
-                AudioManager.play("RobotSmash.wav")
+                AudioManager.play("explosion.wav")
                 pass
         if pygame.Rect.colliderect(drone.rect, cowboy.rect):
             failing = True
-    display_boss = (drone_count >= 2)
+    display_boss = (drone_count <= 2)
 
     for bossDrone in bossDrones:
         if bossDrone.isActive:
@@ -134,9 +135,9 @@ def main():
         drone.velocity = (-1, 0)
 
     global bossDrones
-    bossDrones=[]
-    for i in range(0,4):
-        boss_temp=BossDrone(path="robot_head_v1.png",position=(win_width+10,win_height/2))
+    bossDrones = []
+    for i in range(0, 4):
+        boss_temp=BossDrone(path="robot_head_v1.png", position=(win_width+10,win_height/2))
         boss_temp.velocity=(-1, 0)
         bossDrones.append(boss_temp)
     global boss_index
@@ -247,7 +248,7 @@ def main():
         elif failing:
             cowboy.lose_sound()
             pygame.mixer.music.load(lose_noise)
-            pygame.mixer.music.play(loops=1, start=0)
+            pygame.mixer.music.play(loops=0, start=0)
             lose_screen = pygame.image.load('lose.png').convert_alpha()
             win.blit(lose_screen, [0, 0])
         else:
