@@ -19,3 +19,11 @@ class Robot(object):
         pygame.mixer.music.load(self.smash_sound)
         pygame.mixer.music.play(loops = 1, start = 0)
         pass
+
+    def action(self,level):
+        level.robot_action()
+        pass
+
+    # used for level 2
+    def __move(self):
+        pass

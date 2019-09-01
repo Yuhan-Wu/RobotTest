@@ -13,6 +13,11 @@ class Bullet(pygame.sprite.Sprite):
         self.visibility = False
         pass
 
+    def set_position(self,new_position):
+        self.rect[0]=new_position[0]
+        self.rect[1]=new_position[1]
+        pass
+
     def update_position(self, speed):
         self.rect[0]=self.rect[0]+self.velocity[0]*speed
         self.rect[1]=self.rect[1]+self.velocity[1]*speed

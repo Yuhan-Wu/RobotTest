@@ -11,8 +11,10 @@ from RobotCharTest.RobotGun import RobotGun
 from RobotCharTest.Bullet import Bullet
 from RobotCharTest.AmmoManager import AmmoManager
 from RobotCharTest.AudioManager import AudioManager
+from RobotCharTest.RewardManager import RewardManager
 from RobotCharTest.ScoreBoard import ScoreBoard
 from RobotCharTest.Drone import Drone
+from RobotCharTest.BossDrone import BossDrone
 
 
 win_width=1600
@@ -21,36 +23,61 @@ win=pygame.display.set_mode((win_width,win_height))
 
 win_noise = 'WinSound.wav'
 lose_noise = 'LoseSound.wav'
+music = 'Music.wav'
 
 clock = pygame.time.Clock()
 key=None
+
 global will_restart
 will_restart = False
 
+
 # CONFIG PARAMETER
 bullet_speed = 30
-cowboy_gun_rot_speed = 10
+cowboy_gun_rot_speed = 2
 robot_gun_rot_speed = 0
-drone_speed = 8
+drone_speed = 1
 bullet_damage = -1
 ammo_capacity = 6
 reloading_time = 20
+reward_kill_needed = 3
+reward_last_time = 10000
 # CONFIG END
 
-def detect_collision():
+def detect_collision(drone_count):
     winning = False
     failing = False
+    display_boss=False
+    count_temp=drone_count
 
     for drone in drones:
         for bullet in cowboy_bullet:
             if pygame.Rect.colliderect(drone.rect, bullet.rect):
-                if drone.damage(bullet_damage):
+                if drone.damage(rm.get_damage(bullet_damage)):
+                    AudioManager.play("WinSound.wav")
+                    count_temp+=1
                     sb.add_score(1)
+                    rm.add()
                 bullet.reset()
-                AudioManager.play("RobotSmash.wav")
+                AudioManager.play("explosion.wav")
                 pass
         if pygame.Rect.colliderect(drone.rect, cowboy.rect):
             failing = True
+    display_boss = (drone_count <= 2)
+
+    for bossDrone in bossDrones:
+        if bossDrone.isActive:
+            for bullet in cowboy_bullet:
+                if pygame.Rect.colliderect(bossDrone.rect, bullet.rect):
+                    if bossDrone.damage(rm.get_damage(bullet_damage)):
+                        sb.add_score(2)
+                        rm.add()
+                        bossDrone.isActive=False
+                    bullet.reset()
+                    AudioManager.play("RobotSmash.wav")
+                    pass
+            if pygame.Rect.colliderect(bossDrone.rect, cowboy.rect):
+                failing = True
 
     for bullet in cowboy_bullet:
         if pygame.Rect.colliderect(cowboy.rect, bullet.rect):
@@ -73,10 +100,11 @@ def detect_collision():
     #                 pygame.time.delay(1000)
     #                 pass
 
-    return winning,failing
+    return winning,failing,display_boss,count_temp
     pass
 
 def main():
+    # RESET EVERYTHING HERE
     will_restart = False
     clock.tick(10)
     pygame.display.set_caption("Space Spinning Cowboy")
@@ -84,8 +112,14 @@ def main():
     bg2 = pygame.image.load("alien_land_v1.png").convert_alpha()
     font = pygame.font.SysFont("Arial", 40)
     control_text_content = "SPACE to SHOOT              R to RESTART"
-    control_text = font.render(control_text_content, True, (128, 0, 0))
-    control_text_rect = control_text.get_rect()
+    control_text = font.render(control_text_content, True, (255, 255, 0))
+
+    audio_track = pygame.mixer.Sound(music)
+    audio_track.set_volume(1)
+    pygame.mixer.Channel(2).play(pygame.mixer.Sound(audio_track))
+
+    global drone_count
+    drone_count = 0
 
     global drones
     drones = []
@@ -99,6 +133,17 @@ def main():
     drones.append(drone_four)
     for drone in drones:
         drone.velocity = (-1, 0)
+
+    global bossDrones
+    bossDrones = []
+    for i in range(0, 4):
+        boss_temp=BossDrone(path="robot_head_v1.png", position=(win_width+10,win_height/2))
+        boss_temp.velocity=(-1, 0)
+        bossDrones.append(boss_temp)
+    global boss_index
+    boss_index=0
+    global display_boss
+    display_boss = False
 
     # global robot
     # head=Head(path="robot_head_v1.png",position=(win_width-300,win_height-200))
@@ -125,6 +170,9 @@ def main():
     global ammo_manager
     ammo_manager = AmmoManager(ammo_capacity, reloading_time)
 
+    global rm
+    rm = RewardManager(reward_kill_needed, reward_last_time, (win_width / 2, win_height - 100))
+
     global cowboy_bullet
     bullet_image_path = "robot_bullet_v1.png"
     cowboy_bullet = []
@@ -145,6 +193,7 @@ def main():
     cowboy_gun_angle = random.randint(0, 360)
 
     run = True
+    # RESET END
     while run:
         for event in pygame.event.get():
             if ((event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE) or \
@@ -158,16 +207,26 @@ def main():
                 run = False
 
         ammo_manager.update_reload(50)
+        rm.update(50)
 
         win.blit(bg1, (0, 0))
         win.blit(bg2, (0, 0))
-        win.blit(control_text, (550, 0))
+        win.blit(control_text, (win_width / 2 - control_text.get_width() / 2, 0))
 
-        winning, failing = detect_collision()
+        winning, failing,display_boss,drone_count = detect_collision(drone_count)
 
+        # Boss
+        if display_boss:
+            for bossDrone in bossDrones:
+                if not bossDrone.isActive:
+                    bossDrones[boss_index].isActive=True
+                    break
+            drone_count = 0
+            display_boss=False
         # Draw
         if not (winning or failing):
             sb.draw(win)
+            rm.draw(win)
             cowboy.draw(win)
             win.blit(cowboy_hand, (cowboy.rect.topleft[0] + 130, cowboy.rect.topleft[1] + 60))
             cowboy_gun_angle += cowboy_gun_rot_speed
@@ -177,6 +236,10 @@ def main():
                 if drone.isActive:
                     drone.update_position(drone_speed)
                     drone.draw(win)
+            for bossDrone in bossDrones:
+                if bossDrone.isActive:
+                    bossDrone.update_position(drone_speed)
+                    bossDrone.draw(win)
             # Cowboy Bullet
             for b in cowboy_bullet:
                 b.update_position(bullet_speed)
@@ -185,7 +248,7 @@ def main():
         elif failing:
             cowboy.lose_sound()
             pygame.mixer.music.load(lose_noise)
-            pygame.mixer.music.play(loops=1, start=0)
+            pygame.mixer.music.play(loops=0, start=0)
             lose_screen = pygame.image.load('lose.png').convert_alpha()
             win.blit(lose_screen, [0, 0])
         else:
