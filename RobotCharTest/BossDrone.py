@@ -9,7 +9,7 @@ class BossDrone(Drone):
         self.health = 3
         self.initial_position = position
         self.isActive=False
-        self.health_bar=BossHealthBar((position[0] - 20, position[1] - 50))
+        self.health_bar=BossHealthBar((position[0] + 18, position[1] - 20))
         pass
 
     def damage(self, value):

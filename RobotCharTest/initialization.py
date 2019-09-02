@@ -35,7 +35,7 @@ will_restart = False
 
 # CONFIG PARAMETER
 bullet_speed = 30
-cowboy_gun_rot_speed = 2
+cowboy_gun_rot_speed = 10
 robot_gun_rot_speed = 0
 drone_speed = 1
 bullet_damage = -1

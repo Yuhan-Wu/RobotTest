@@ -11,7 +11,7 @@ class Drone(pygame.sprite.Sprite):
         self.velocity = (0, 0)
         self.isActive = True
         self.health = 2
-        self.health_bar = HealthBar((position[0] - 20, position[1] - 50))
+        self.health_bar = HealthBar((position[0]+18, position[1]-20))
         pass
 
     def draw(self, screen):
