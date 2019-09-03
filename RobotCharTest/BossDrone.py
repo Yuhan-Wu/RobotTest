@@ -6,8 +6,10 @@ class BossDrone(Drone):
     def __init__(self,path,position):
         super(BossDrone,self).__init__(path,position)
         self.image = pygame.image.load('robot_head_v1.png')
-        self.health = 3
+        self.rect = self.image.get_rect()
         self.initial_position = position
+        self.rect.topleft = position
+        self.health = 3
         self.isActive=False
         self.health_bar=BossHealthBar((position[0] + 18, position[1] - 20))
         pass
