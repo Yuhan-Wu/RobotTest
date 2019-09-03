@@ -39,6 +39,6 @@ class Drone(pygame.sprite.Sprite):
 
     def reset(self):
         self.rect.topleft = self.initial_position
-        self.health_bar.rect.topleft = (self.rect.topleft[0] - 20, self.rect.topleft[1] - 50)
+        self.health_bar.rect.topleft = (self.rect.topleft[0]+18, self.rect.topleft[1] - 20)
         self.health = 2
         #self.velocity = (0, 0)
