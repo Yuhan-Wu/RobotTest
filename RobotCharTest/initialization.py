@@ -1,6 +1,7 @@
 import pygame
 import random
 pygame.init()
+import json
 
 from RobotCharTest.Robot import Robot
 from RobotCharTest.Head import Head
@@ -45,6 +46,18 @@ reward_kill_needed = 3
 reward_last_time = 10000
 overheat_meter_position = (100, 100)
 # CONFIG END
+
+def read_config():
+    path="parameters.json"
+    with open(path, "r") as f:
+        load_dict = json.load(f)
+        print(load_dict)
+    global bullet_speed
+    bullet_speed=load_dict["bullet_speed"]
+    global cowboy_gun_rot_speed
+    cowboy_gun_rot_speed = load_dict["cowboy_gun_rot_speed"]
+    global drone_speed
+    drone_speed=load_dict["drone_speed"]
 
 def detect_collision(drone_count):
     winning = False
@@ -107,6 +120,7 @@ def detect_collision(drone_count):
 
 def main():
     # RESET EVERYTHING HERE
+    read_config()
     will_restart = False
     clock.tick(10)
     pygame.display.set_caption("Space Spinning Cowboy")
